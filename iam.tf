@@ -23,9 +23,11 @@ data "aws_iam_policy_document" "assume_node_role" {
     actions = ["sts:AssumeRole"]
   }
 }
-
+resource "random_id" "suffix" {
+  byte_length = 4
+}
 resource "aws_iam_role" "example" {
-  name               = "eks-cluster-example-new"
+  name               = "eks-cluster-example-${random_id.suffix.hex}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -42,7 +44,7 @@ resource "aws_iam_role_policy_attachment" "example-AmazonEKSVPCResourceControlle
 }
 
 resource "aws_iam_role" "worker" {
-  name               = "eks-node-role-new"
+  name               = "eks-node-role-${random_id.suffix.hex}"
   assume_role_policy = data.aws_iam_policy_document.assume_node_role.json
 }
 
